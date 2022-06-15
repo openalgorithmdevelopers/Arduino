@@ -37,6 +37,8 @@ unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE	(50)
 char msg[MSG_BUFFER_SIZE];
 
+#define LED_PIN D1
+
 // Control message byte from flask/python
 //# 0000 00 00   #0 # do nothing or future use
 //# 0000 01 01   #5  # default short duration and low quality
@@ -190,6 +192,8 @@ void setup() {
     reconnect();
   }
   client.loop();
+
+  digitalWrite(LED_PIN, HIGH);   // signal through LED pin that the system is now ready
 }
 
 void loop() {
@@ -233,7 +237,7 @@ void capture_and_write_signal(){
 //    Serial.print("Loop counter = ");
 //    Serial.println(loopCounter);
     DS_signal += String(sample) + ",";
-      
+    analogWrite(LED_PIN, random(0,255));  // signal through led pin that the data is being recorded.
     delay(currentSignalQuality); 
   }  
 
@@ -249,6 +253,7 @@ void capture_and_write_signal(){
 //  Serial.println("Signal recording on the file completed..");
 }
 
+bool HIGH_LOW_SWITCH = false;
 void Send_File_MQTT(){
   File file;
   
@@ -271,6 +276,16 @@ void Send_File_MQTT(){
         counter += 1;
       }
       client.publish("/DS/Arduino", msg, 1);
+      if(HIGH_LOW_SWITCH)
+      {
+        digitalWrite(LED_PIN, HIGH);
+        HIGH_LOW_SWITCH = false;
+      }
+      else
+      {
+        digitalWrite(LED_PIN, LOW);
+        HIGH_LOW_SWITCH = true;
+      }
 //      Serial.println("Published: ");
 //      Serial.println(msg);
       delay(100); // 200 delay is working fine without any data loss

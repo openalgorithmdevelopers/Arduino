@@ -39,14 +39,13 @@ void setup() {
 int oldX = 0, oldY = 0, oldZ = 0, newX = 0, newY = 0, newZ = 0;
 
 void loop() {
-
-  mpu.Execute();
-  Serial.print("AngX = ");
-  Serial.print(oldX);
-  Serial.print("  /  AngY = ");
-  Serial.print(oldY);
-  Serial.print("  /  AngZ = ");
-  Serial.println(oldZ);
+ mpu.Execute();
+ Serial.print("AngX = ");
+ Serial.print(oldX);
+ Serial.print("  /  AngY = ");
+ Serial.print(oldY);
+ Serial.print("  /  AngZ = ");
+ Serial.println(oldZ);
   newX = mpu.GetAngX();
   if(abs(oldX - newX) > 1)
     oldX = int(newX);
@@ -56,4 +55,5 @@ void loop() {
   newZ = mpu.GetAngZ();
   if(abs(oldZ - newZ) > 1)
     oldZ = int(newZ);  
+
 }

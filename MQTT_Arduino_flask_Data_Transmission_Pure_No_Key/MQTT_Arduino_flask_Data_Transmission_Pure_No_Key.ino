@@ -37,7 +37,8 @@ unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE	(50)
 char msg[MSG_BUFFER_SIZE];
 
-#define LED_PIN D1
+//#define LED_PIN D1
+#define LED_PIN LED_BUILTIN
 
 // Control message byte from flask/python
 //# 0000 00 00   #0 # do nothing or future use
@@ -181,7 +182,7 @@ void reconnect() {
 }
 
 void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  pinMode(LED_PIN, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
   Serial.begin(115200);
 
   setup_wifi();
@@ -198,18 +199,18 @@ void setup() {
 
 void loop() {
   if(REPEAT_CAPTURE_AND_SEND)
-  {
+  { 
     Serial.println("starting to capture and send");
     capture_and_write_signal();
     Send_File_MQTT();
     REPEAT_CAPTURE_AND_SEND = false;
     Serial.println("Done with the task");
   }
+
+  digitalWrite(LED_PIN, HIGH);   // signal through LED pin that the system is now again ready // Not working :(
   
   client.loop();
   client.subscribe("/DS/flask");
-//  client.subscribe("topi/c");
-  //Send_File_MQTT();
 }
 
 void capture_and_write_signal(){
